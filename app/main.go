@@ -1,33 +1,56 @@
 package main
 
 import (
-	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
-// Onclik make title
-func menu(app *tview.Application) *tview.List {
-	list := tview.NewList().
-		AddItem("Add New Todo", "", '1', nil).
-		AddItem("Show Todo's", "", '2', nil)
-	return list
+type todo struct {
+	Name, Description string
 }
-func main() {
 
-	app := tview.NewApplication()
+
+// Add navbar ->  <F1> menu, <F2> todo list(if exists), <F3> add todo, <F4> remove todo, <F5> update todo
+
+var app =  tview.NewApplication()
+var pages = tview.NewPages()
+var list = tview.NewList()
+var flex = tview.NewFlex()
+var box = tview.NewBox()
+var text = tview.NewTextView()
 	
-	list := menu(app)
-	list.SetBorder(true)
-	flex := tview.NewFlex()
+func showTodo(){
+	pages.AddPage("Todo", text, true, true)
+	pages.SwitchToPage("Todo")
+	text.SetText(`Do something`)
+} 
+func showMenuTui() *tview.Pages{
+	pages.AddPage("List", list, true, true)
+	pages.SwitchToPage("List")
+	list.AddItem("Show Todo's'","",'a',func() {
+		showTodo()
+	})
+	list.AddItem("quit", "", 'q', func() {
+		app.Stop()
+	})
+	return pages
+}
 
-	flex.
-		AddItem(list, 0, 1, false).
-		AddItem(tview.NewBox().SetBorder(true), 0, 3, false)
+func keywordBar(){
+	
+}
 
-	transparentColor := tcell.NewHexColor(0x00000000) 
+func main() {
+		
+	// List -> Title, Description
+	// ------------ V1 -------------
+	// Show contents
+	// Add List
+	// Remove List
+	// Update List
 
-	flex.SetTitle(" Todo List Application ").SetBorder(true).SetBorderColor(tcell.ColorReset)
-	flex.SetBorderColor(transparentColor)
-
-	app.SetRoot(flex, true).SetFocus(flex).Run()
+	// ------------ V2 -------------
+	// Add checkbox
+	// The project's cookie resets every 24 hour - changeable
+	menu := showMenuTui()
+	app.SetRoot(menu, true).SetFocus(menu).Run()
 }
