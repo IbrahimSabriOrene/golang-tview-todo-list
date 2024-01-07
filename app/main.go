@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bufio"
+	//"bufio"
 	"fmt"
 	"io"
 	"os"
@@ -72,7 +72,7 @@ func saveTodo(app *tview.Application) {
 
 	_, err = file.WriteString(storedText)
 	// Add the line number and a space before the line
-	setLineNumber() // Move this to somewhere else it keeps repeating
+	//setLineNumber() // Move this to somewhere else it keeps repeating
 	text.SetText(storedText, true)
 	content.SetText(storedText)
 
@@ -98,56 +98,57 @@ func loadTodo(app *tview.Application, textarea *tview.TextView) {
 	text.SetText(string(data), true)
 }
 
-func setLineNumber() {
-	filename := "Todo.txt" // Replace with your filename
-
-	// Open the file in read mode
-	file, err := os.Open(filename)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error opening file: %v\n", err)
-		return
-	}
-	defer file.Close()
-
-	// Create a new temporary file to store the modified content
-	tempFile, err := os.Create("temp_file.txt")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error creating temporary file: %v\n", err)
-		return
-	}
-	defer tempFile.Close()
-
-	// Iterate through each line of the original file
-	scanner := bufio.NewScanner(file)
-	lineNumber := 1
-	for scanner.Scan() {
-		// Get the current line
-		line := scanner.Text()
-
-		// Add the line number and a space before the line
-		fmt.Fprintf(tempFile, "%d %s\n", lineNumber, line)
-
-		lineNumber++
-	}
-
-	// Handle any errors during scanning
-	if err := scanner.Err(); err != nil {
-		fmt.Fprintf(os.Stderr, "Error scanning file: %v\n", err)
-		return
-	}
-
-	// Close both files
-	file.Close()
-	tempFile.Close()
-
-	// Overwrite the original file with the modified content
-	if err := os.Rename("temp_file.txt", filename); err != nil {
-		fmt.Fprintf(os.Stderr, "Error renaming temporary file: %v\n", err)
-		return
-	}
-
-	fmt.Println("Numbers added successfully to each line of the file!")
-}
+//func setLineNumber() {
+//	filename := "Todo.txt" // Replace with your filename
+//
+//	// Open the file in read mode
+//	file, err := os.Open(filename)
+//	if err != nil {
+//		fmt.Fprintf(os.Stderr, "Error opening file: %v\n", err)
+//		return
+//	}
+//	defer file.Close()
+//
+//	// Create a new temporary file to store the modified content
+//	tempFile, err := os.Create("temp_file.txt")
+//	if err != nil {
+//		fmt.Fprintf(os.Stderr, "Error creating temporary file: %v\n", err)
+//		return
+//	}
+//	defer tempFile.Close()
+//
+//	// Iterate through each line of the original file
+//	scanner := bufio.NewScanner(file)
+//	lineNumber := 1
+//	for scanner.Scan() {
+//		// Bug : Every time we save the file, file aadds 1, 2, 3 to the file. So we need to check the file, and add the line number based on that. 
+//		// Get the current line
+//		line := scanner.Text()
+//
+//		// Add the line number and a space before the line
+//		fmt.Fprintf(tempFile, "%d %s\n", lineNumber, line)
+//
+//		lineNumber++
+//	}
+//
+//	// Handle any errors during scanning
+//	if err := scanner.Err(); err != nil {
+//		fmt.Fprintf(os.Stderr, "Error scanning file: %v\n", err)
+//		return
+//	}
+//
+//	// Close both files
+//	file.Close()
+//	tempFile.Close()
+//
+//	// Overwrite the original file with the modified content
+//	if err := os.Rename("temp_file.txt", filename); err != nil {
+//		fmt.Fprintf(os.Stderr, "Error renaming temporary file: %v\n", err)
+//		return
+//	}
+//
+//	fmt.Println("Numbers added successfully to each line of the file!")
+//}
 
 func handleKeyPress(event *tcell.EventKey) *tcell.EventKey {
 	switch event.Key() {
@@ -179,7 +180,7 @@ func main() {
 	// Later we are gonna connect MySql Database
 
 	// The project's cookie resets every 24 hour - changeable
-	//
+	// get first character of the last line, add +1 to new todo.
 	keyinfo1.SetText("<F1> Add Todo").SetTextAlign(tview.AlignCenter)
 	keyinfo2.SetText("<Q> Quit").SetTextAlign(tview.AlignCenter)
 	keyinfo3.SetText("<F3> Quit and Save").SetTextAlign(tview.AlignCenter)
@@ -194,7 +195,7 @@ func main() {
 		AddItem(flex.AddItem(keyinfo1, 0, 2, false).
 			AddItem(keyinfo2, 0, 2, false).
 			AddItem(keyinfo3, 0, 2, false), 2, 0, 1, 3, 1, 1, false).
-		AddItem(inputField, 0, 0, 1, 3, 0, 0, false).
+		AddItem(text, 0, 0, 1, 3, 0, 0, false).
 		AddItem(content, 1, 0, 1, 3, 0, 0, false)
 
 	content.SetTextAlign(tview.AlignCenter)
@@ -204,5 +205,5 @@ func main() {
 	//flex.AddItem(tview.NewTextView(), 0,1, false)
 	//flex.AddItem(content, 0, 3, false)
 	app.SetInputCapture(handleKeyPress)
-	app.SetRoot(grid, true).SetFocus(inputField).Run()
+	app.SetRoot(grid, true).SetFocus(text).Run()
 }
