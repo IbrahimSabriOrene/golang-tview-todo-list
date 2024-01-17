@@ -181,9 +181,8 @@ func main() {
 
 	// The project's cookie resets every 24 hour - changeable
 	// get first character of the last line, add +1 to new todo.
-	keyinfo1.SetText("<F1> Add Todo").SetTextAlign(tview.AlignCenter)
-	keyinfo2.SetText("<Q> Quit").SetTextAlign(tview.AlignCenter)
-	keyinfo3.SetText("<F3> Quit and Save").SetTextAlign(tview.AlignCenter)
+	keyinfo1.SetText("<Ctrl-S Save File").SetTextAlign(tview.AlignCenter)
+	keyinfo2.SetText("<F2> Quit").SetTextAlign(tview.AlignCenter)
 
 	//menu := navbarTui()
 	flex := tview.NewFlex()
